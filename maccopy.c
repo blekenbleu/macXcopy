@@ -1,16 +1,17 @@
 // Public Domain License 2016
 //
-// Simulate right-handed unix/linux X11 middle-mouse-click copy and paste.
+// Simulate right-handed unix/linux X11 left-mouse-button copy
 //
 // References:
+// https://github.com/lodestone/macpaste
 // http://stackoverflow.com/questions/3134901/mouse-tracking-daemon
 // http://stackoverflow.com/questions/2379867/simulating-key-press-events-in-mac-os-x#2380280
 //
 // Compile with:
-// gcc -framework ApplicationServices -o macpaste macpaste.c
+// gcc -framework ApplicationServices -o macmark macmark.c
 //
 // Start with:
-// ./macpaste
+// ./macmark
 //
 // Terminate with Ctrl+C
 
@@ -32,34 +33,6 @@ long long now() {
     gettimeofday( & te, NULL );
     long long milliseconds = te.tv_sec*1000LL + te.tv_usec/1000; // caculate milliseconds
     return milliseconds;
-}
-
-static void paste(CGEventRef event) {
-	// Mouse click to focus and position insertion cursor.
-	CGPoint mouseLocation = CGEventGetLocation( event );
-    CGEventRef mouseClickDown = CGEventCreateMouseEvent( 
-                                NULL, kCGEventLeftMouseDown, mouseLocation, kCGMouseButtonLeft );
-    CGEventRef mouseClickUp   = CGEventCreateMouseEvent( 
-                                 NULL, kCGEventLeftMouseUp,   mouseLocation, kCGMouseButtonLeft );
-  	CGEventPost( tapH, mouseClickDown );
-  	CGEventPost( tapH, mouseClickUp );
-  	CFRelease( mouseClickDown );
-  	CFRelease( mouseClickUp );
-
-	// Allow click events time to position cursor before pasting.
-	usleep( 1000 );
-
-  // Paste.
-  CGEventSourceRef source = CGEventSourceCreate( kCGEventSourceStateCombinedSessionState );  
-  CGEventRef kbdEventPasteDown = CGEventCreateKeyboardEvent( source, kVK_ANSI_V, 1 );                 
-  CGEventRef kbdEventPasteUp   = CGEventCreateKeyboardEvent( source, kVK_ANSI_V, 0 );                 
-  CGEventSetFlags( kbdEventPasteDown, kCGEventFlagMaskCommand );
-	CGEventPost( tapA, kbdEventPasteDown );
-	CGEventPost( tapA, kbdEventPasteUp );
-	CFRelease( kbdEventPasteDown );
-	CFRelease( kbdEventPasteUp );
-
-	CFRelease( source );
 }
 
 static void copy() {
@@ -95,17 +68,13 @@ static CGEventRef mouseCallback (
 ) {
 	switch ( type )
 	{
-		case kCGEventOtherMouseDown:
-			paste( event );
-			break;
-
 		case kCGEventLeftMouseDown:
 			recordClickTime();
 			break;
 
 		case kCGEventLeftMouseUp:
 			if ( isDoubleClick() || isDragging ) {
-				copy();
+			    copy();
 			}
 			isDragging = 0;
 			break;

@@ -1,15 +1,13 @@
 .PHONEY: clean run
 
-all: help
+maccopy: maccopy.c
+	gcc -O2 -framework ApplicationServices -o maccopy maccopy.c
 
 help: 
-	@echo make [ clean macpaste run ]
+	@echo make [ clean maccopy run ]
 
 clean:
-	-rm -f macpaste
-
-macpaste: macpaste.c
-	gcc -O2 -framework ApplicationServices -o macpaste macpaste.c
+	-rm -f maccopy
 
 run:
-	./macpaste
+	./maccopy
