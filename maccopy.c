@@ -8,25 +8,24 @@
 // http://stackoverflow.com/questions/2379867/simulating-key-press-events-in-mac-os-x#2380280
 //
 // Compile with:
-// gcc -framework ApplicationServices -o macmark macmark.c
+// gcc -framework ApplicationServices -o maccopy maccopy.c
 //
 // Start with:
-// ./macmark
+// ./maccopy
 //
 // Terminate with Ctrl+C
 
 #include <ApplicationServices/ApplicationServices.h>
-#include <Carbon/Carbon.h> // kVK_ANSI_*
-#include <sys/time.h> // gettimeofday
+#include <Carbon/Carbon.h> 	// kVK_ANSI_*
+#include <sys/time.h> 		// gettimeofday
 
-char isDragging = 0;
+bool isDragging = 0;
 long long prevClickTime = 0;
 long long curClickTime = 0;
 
 CGEventTapLocation tapA = kCGAnnotatedSessionEventTap;
-CGEventTapLocation tapH = kCGHIDEventTap;
 
-#define DOUBLE_CLICK_MILLIS 500
+#define DOUBLE_CLICK_MILLIS 2500
 
 long long now() {
     struct timeval te; 
@@ -52,12 +51,14 @@ static void recordClickTime() {
 	curClickTime = now();
 }
 
-static char isDoubleClickSpeed() {
-	return ( curClickTime - prevClickTime ) < DOUBLE_CLICK_MILLIS;
-}
+static bool isDoubleClick() {
+	int time = ( curClickTime - prevClickTime );
 
-static char isDoubleClick() {
-		return isDoubleClickSpeed();
+#ifdef DEBUG
+	fprintf(stderr, "maccopy ClickTime %d", time);
+#endif
+        return ( (150 > time) ? 0	// debounce
+	 	: (time < DOUBLE_CLICK_MILLIS) );
 }
 
 static CGEventRef mouseCallback (
