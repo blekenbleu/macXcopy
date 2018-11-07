@@ -27,86 +27,88 @@ CGEventTapLocation tapA = kCGAnnotatedSessionEventTap;
 
 #define DOUBLE_CLICK_MILLIS 2500
 
-long long now() {
-    struct timeval te; 
+long long now()
+{
+    static struct timeval te; 
     gettimeofday( & te, NULL );
     long long milliseconds = te.tv_sec*1000LL + te.tv_usec/1000; // caculate milliseconds
     return milliseconds;
 }
 
-static void copy() {
-  CGEventSourceRef source = CGEventSourceCreate( kCGEventSourceStateCombinedSessionState );  
-  CGEventRef kbdEventDown = CGEventCreateKeyboardEvent( source, kVK_ANSI_C, 1 );                 
-  CGEventRef kbdEventUp   = CGEventCreateKeyboardEvent( source, kVK_ANSI_C, 0 );                 
-  CGEventSetFlags( kbdEventDown, kCGEventFlagMaskCommand );
-	CGEventPost( tapA, kbdEventDown );
-	CGEventPost( tapA, kbdEventUp );
-	CFRelease( kbdEventDown );
-	CFRelease( kbdEventUp );
-	CFRelease( source );
+static void copy()
+{
+    CGEventSourceRef source = CGEventSourceCreate( kCGEventSourceStateCombinedSessionState );  
+    CGEventRef kbdEventDown = CGEventCreateKeyboardEvent( source, kVK_ANSI_C, 1 );                 
+    CGEventRef kbdEventUp   = CGEventCreateKeyboardEvent( source, kVK_ANSI_C, 0 );                 
+    CGEventSetFlags( kbdEventDown, kCGEventFlagMaskCommand );
+    CGEventPost( tapA, kbdEventDown );
+    CGEventPost( tapA, kbdEventUp );
+    CFRelease( kbdEventDown );
+    CFRelease( kbdEventUp );
+    CFRelease( source );
 }
 
-static void recordClickTime() {
-	prevClickTime = curClickTime;
-	curClickTime = now();
+static void recordClickTime()
+{
+    prevClickTime = curClickTime;
+    curClickTime = now();
 }
 
-static bool isDoubleClick() {
-	int time = ( curClickTime - prevClickTime );
+static bool isDoubleClick()
+{
+    int time = ( curClickTime - prevClickTime );
 
 #ifdef DEBUG
-	fprintf(stderr, "maccopy ClickTime %d", time);
+    fprintf(stderr, "maccopy ClickTime %d", time);
 #endif
-        return ( (150 > time) ? 0	// debounce
-	 	: (time < DOUBLE_CLICK_MILLIS) );
+    return ( (150 > time) ? 0	// debounce
+ 	   : (time < DOUBLE_CLICK_MILLIS) );
 }
 
 static CGEventRef mouseCallback (
-    CGEventTapProxy proxy,
-    CGEventType type,
-    CGEventRef event,
-    void * refcon
-) {
-	switch ( type )
-	{
-		case kCGEventLeftMouseDown:
-			recordClickTime();
-			break;
+				CGEventTapProxy proxy,
+				CGEventType type,
+				CGEventRef event,
+				void * refcon )
+{
+    switch ( type )
+    {
+    	case kCGEventLeftMouseDown:
+        	recordClickTime();
+    		break;
 
-		case kCGEventLeftMouseUp:
-			if ( isDoubleClick() || isDragging ) {
-			    copy();
-			}
-			isDragging = 0;
-			break;
+    	case kCGEventLeftMouseUp:
+    		if ( isDoubleClick() || isDragging ) {
+    		    copy();
+    		}
+    		isDragging = 0;
+    		break;
 
-		case kCGEventLeftMouseDragged:
-			isDragging = 1;
-			break;
+    	case kCGEventLeftMouseDragged:
+    		isDragging = 1;
+    		break;
 
-		default:
-			break;
-	}
+    	default:
+    		break;
+    }
 
     // Pass on the event, we must not modify it anyway, we are a listener
     return event;
 }
 
-int main (
-    int argc,
-    char ** argv
-) {
+int main ( int argc, char ** argv )
+{
     CGEventMask emask;
     CFMachPortRef myEventTap;
     CFRunLoopSourceRef eventTapRLSrc;
 
-	printf("Quit from command-line foreground with Ctrl+C\n");
+    printf("Quit from command-line foreground with Ctrl+C\n");
 
     // We want "other" mouse button click-release, such as middle or exotic.
-    emask = CGEventMaskBit( kCGEventOtherMouseDown )  |
-		    CGEventMaskBit( kCGEventLeftMouseDown ) |
-			CGEventMaskBit( kCGEventLeftMouseUp )   |
-			CGEventMaskBit( kCGEventLeftMouseDragged );
+    emask = CGEventMaskBit( kCGEventOtherMouseDown ) |
+	    CGEventMaskBit( kCGEventLeftMouseDown )  |
+	    CGEventMaskBit( kCGEventLeftMouseUp )    |
+	    CGEventMaskBit( kCGEventLeftMouseDragged );
 
     // Create the Tap
     myEventTap = CGEventTapCreate (
