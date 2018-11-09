@@ -34,6 +34,39 @@
           ]
         }
       ]
+    },
+    {
+      "description": "browser mouse middle button paste",
+      "manipulators": [
+        {
+          "type": "basic",
+          "from": {
+            "pointing_button": "button3",
+            "modifiers": {
+              "mandatory": [
+                "command"
+              ]
+            }
+          },
+          "to": [
+            {
+              "key_code": "v",
+              "modifiers": [
+                "left_command"
+              ]
+            }
+          ],
+          "conditions": [
+            {
+              "bundle_identifiers": [
+                "^org\\.mozilla\\.firefox$",
+                "^com\\.google\\.Chrome$",
+                "^com\\.apple\\.Safari$"
+              ]
+            }
+          ]
+        }
+      ]
     }
   ]
 }
