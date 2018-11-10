@@ -2,17 +2,12 @@
   "title": "X Mousei style actions",
   "rules": [
     {
-      "description": "mouse middle button paste",
+      "description": "X mouse middle-button paste",
       "manipulators": [
         {
           "type": "basic",
           "from": {
-            "pointing_button": "button3",
-            "modifiers": {
-              "optional": [
-                "any"
-              ]
-            }
+            "pointing_button": "button3"
           },
           "to": [
             {
@@ -36,7 +31,7 @@
       ]
     },
     {
-      "description": "browser mouse middle button paste",
+      "description": "browser [command]+mouse middle-button paste",
       "manipulators": [
         {
           "type": "basic",

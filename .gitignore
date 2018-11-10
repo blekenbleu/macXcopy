@@ -1,0 +1,7 @@
+_site/
+Gem*
+.sass-cache/
+.jekyll-cache/
+.jekyll-metadata
+*~
+*.swp
