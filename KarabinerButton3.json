@@ -2,7 +2,7 @@
   "title": "X mouse paste",
   "rules": [
     {
-      "description": "mouse middle button paste",
+      "description": "mouse middle-button paste",
       "manipulators": [
         {
           "type": "basic",
