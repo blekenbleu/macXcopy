@@ -2,7 +2,7 @@
   "title": "X mouse paste",
   "rules": [
     {
-      "description": "mouse middle-button paste",
+      "description": "mouse middle button paste",
       "manipulators": [
         {
           "type": "basic",
@@ -24,6 +24,7 @@
           ],
           "conditions": [
             {
+              "type": "frontmost_application_if",
               "bundle_identifiers": [
                 "^org\\.mozilla\\.firefox$",
                 "^com\\.google\\.Chrome$",
