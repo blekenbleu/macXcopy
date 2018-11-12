@@ -1,8 +1,8 @@
 {
-  "title": "X mouse paste",
+  "title": "command mouse paste",
   "rules": [
     {
-      "description": "mouse middle button paste",
+      "description": "command+middle-button paste",
       "manipulators": [
         {
           "type": "basic",
@@ -18,17 +18,8 @@
             {
               "key_code": "v",
               "modifiers": [
+                "left_shift",
                 "left_command"
-              ]
-            }
-          ],
-          "conditions": [
-            {
-              "type": "frontmost_application_if",
-              "bundle_identifiers": [
-                "^org\\.mozilla\\.firefox$",
-                "^com\\.google\\.Chrome$",
-                "^com\\.apple\\.Safari$"
               ]
             }
           ]
