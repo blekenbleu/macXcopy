@@ -63,7 +63,4 @@ macOS does not support adding a plain bash script file as a startup "Login Item"
 **macXcopy.app** is simply a bash script disguised as a macOS .app by [Automator.app](https://support.apple.com/guide/automator/welcome/mac):  
 ![snapshot of macXcopy bash script](automator.png "bash script")
 
-## License
-{% include_relative LICENSE %}
-
 ###  See [these GitHub Pages](https://blekenbleu.github.io/VimTXmouse) for related documentation 
